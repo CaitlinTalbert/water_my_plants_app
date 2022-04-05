@@ -1,7 +1,12 @@
 const db = require("../data/db-config");
 
-const getAllUsers = () => {
-  return db("users");
+const getAllUsers = async () => {
+  let result = await db("users").select(
+    "users.user_id",
+    "users.username",
+    "users.phoneNumber"
+  );
+  return result;
 };
 
 const findByUsername = async (username) => {

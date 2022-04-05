@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../secrets");
+
 const User = require("./users-model");
 
 //bring in middleware
@@ -8,10 +10,11 @@ const {
   validateBody,
   checkIfExists,
   checkAuth,
+  restricted,
 } = require("./users-middleware");
 const saltRounds = 8;
 
-//get all user
+//get all users
 router.get("/", async (req, res) => {
   try {
     User.getAllUsers().then((users) => {
@@ -23,7 +26,13 @@ router.get("/", async (req, res) => {
 });
 
 //get user by an ID
-router.get("/:user_id", (req, res, next) => {});
+router.get("/:user_id", restricted, (req, res, next) => {
+  User.findById(req.params.user_id)
+    .then((user) => {
+      res.json(user);
+    })
+    .catch(next);
+});
 
 //register new user, username, phone number, and password
 router.post("/register", validateBody, checkIfExists, async (req, res) => {
@@ -49,7 +58,7 @@ router.post("/register", validateBody, checkIfExists, async (req, res) => {
 });
 
 //user can login
-router.post("/login", validateBody, checkAuth, async (req, res, next) => {
+router.post("/login", validateBody, checkAuth, async (req, res) => {
   try {
     if (bcrypt.compareSync(req.userInput.password, req.user.password)) {
       const payload = {
@@ -68,18 +77,18 @@ router.post("/login", validateBody, checkAuth, async (req, res, next) => {
 });
 
 function generateToken(payload) {
-  return jwt.sign(payload, "JWT_SECRET", { expiresIn: "1d" });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
 }
 
 //update a users phone number and password
-router.put("/:user_id", (req, res, next) => {});
+// router.put("/:user_id", (req, res, next) => {});
 
 //delete a user by ID
-router.delete("/remove/:user_id", (req, res, next) => {
-  try {
-  } catch (err) {
-    next(err);
-  }
-});
+// router.delete("/remove/:user_id", restricted (req, res, next) => {
+//   try {
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 module.exports = router;
