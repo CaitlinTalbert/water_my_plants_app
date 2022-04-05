@@ -81,14 +81,36 @@ function generateToken(payload) {
 }
 
 //update a users phone number and password
-// router.put("/:user_id", (req, res, next) => {});
+router.put("/:user_id", restricted, (req, res, next) => {
+  const { phoneNumber, password } = req.body;
+  const { user_id } = req.params;
+  const passwordHash = bcrypt.hashSync(password, 8);
+
+  User.updateUser(
+    {
+      phoneNumber,
+      password: passwordHash,
+    },
+    user_id
+  )
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch(next);
+});
 
 //delete a user by ID
-// router.delete("/remove/:user_id", restricted (req, res, next) => {
-//   try {
-//   } catch (err) {
-//     next(err);
-//   }
-// });
+router.delete("/remove/:user_id", restricted, (req, res, next) => {
+  try {
+    const { user_id } = req.params;
+    User.deleteUserById(user_id)
+      .then((deletedUser) => {
+        res.json(deletedUser);
+      })
+      .catch(next);
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = router;

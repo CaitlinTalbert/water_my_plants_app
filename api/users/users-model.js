@@ -27,7 +27,28 @@ const insertUser = async (user) => {
   return findById(result);
 };
 
-module.exports = { getAllUsers, insertUser, findById, findByUsername };
+const updateUser = async (user, user_id) => {
+  let result = await db("users")
+    .where("user_id", user_id)
+    .update(user, ["user_id", "username", "phoneNumber", "password"]);
+  return result;
+};
+
+const deleteUserById = async (user_id) => {
+  let result = await db("users")
+    .where("user_id", user_id)
+    .del(["user_id", "username", "phoneNumber", "password"]);
+  return result;
+};
+
+module.exports = {
+  getAllUsers,
+  insertUser,
+  findById,
+  findByUsername,
+  updateUser,
+  deleteUserById,
+};
 
 // async function insertUser(user) {
 //     // WITH POSTGRES WE CAN PASS A "RETURNING ARRAY" AS 2ND ARGUMENT TO knex.insert/update
