@@ -4,12 +4,14 @@ const cors = require("cors");
 const server = express();
 
 const usersRouter = require("./users/users-router");
+const plantsRouter = require("./plants/plants-router");
 
 server.use(express.json());
 server.use(helmet());
 server.use(cors());
 
 server.use("/api/users", usersRouter);
+server.use("/api/plants", plantsRouter);
 
 server.get("/", (req, res) => {
   res.status(200).json({ api: "up" });
