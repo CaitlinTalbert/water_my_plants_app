@@ -104,8 +104,8 @@ router.delete("/remove/:user_id", restricted, (req, res, next) => {
   try {
     const { user_id } = req.params;
     User.deleteUserById(user_id)
-      .then((deletedUser) => {
-        res.json(deletedUser);
+      .then((result) => {
+        res.json(result);
       })
       .catch(next);
   } catch (err) {
