@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { verifyPlantInputs } = require("./plants-middleware");
 const Plant = require("./plants-model");
+const { restricted } = require("../restricted");
 
 //get all plants
 router.get("/", async (req, res) => {
@@ -14,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 //get plant by ID
-router.get("/:plant_id", (req, res, next) => {
+router.get("/:plant_id", restricted, (req, res, next) => {
   Plant.findById(req.params.plant_id)
     .then((plant) => {
       res.json(plant);
@@ -23,7 +24,7 @@ router.get("/:plant_id", (req, res, next) => {
 });
 
 //create new plant
-router.post("/", verifyPlantInputs, async (req, res) => {
+router.post("/", restricted, verifyPlantInputs, async (req, res) => {
   try {
     Plant.createPlant(req.body, { user_id: 1 }).then((plant) =>
       res.json(plant)
@@ -36,7 +37,7 @@ router.post("/", verifyPlantInputs, async (req, res) => {
 });
 
 //update a plant
-router.put("/:id", async (req, res) => {
+router.put("/:id", restricted, async (req, res) => {
   const { id } = req.params;
   try {
     Plant.updatePlant(id, req.body).then((plant) => {
@@ -50,7 +51,7 @@ router.put("/:id", async (req, res) => {
 });
 
 //delete a plant
-router.delete("/remove/:plant_id", async (req, res, next) => {
+router.delete("/remove/:plant_id", restricted, async (req, res, next) => {
   try {
     const { plant_id } = req.params;
     Plant.deletePlantById(plant_id)

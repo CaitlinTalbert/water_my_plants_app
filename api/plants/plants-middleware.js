@@ -8,6 +8,8 @@ const verifyPlantInputs = async (req, res, next) => {
   }
 };
 
+//could build a middleware to restrict other users from deleting other users posts
+
 module.exports = {
   verifyPlantInputs,
 };

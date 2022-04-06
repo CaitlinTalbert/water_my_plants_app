@@ -4,13 +4,12 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../secrets");
 
 const User = require("./users-model");
-
+const { restricted } = require("../restricted");
 //bring in middleware
 const {
   validateBody,
   checkIfExists,
   checkAuth,
-  restricted,
 } = require("./users-middleware");
 const saltRounds = 8;
 
